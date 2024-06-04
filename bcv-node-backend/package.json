@@ -1,19 +1,19 @@
 {
   "name": "agri-medico-backend",
   "version": "1.0.0",
-  "description": "backend for predicting disease in plant",
+  "description": "backend for validating business",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/navneetthakor/agri-medico-backend.git"
+    "url": "https://github.com/navneetthakor/bcv-node-backend.git"
   },
   "keywords": [
-    "disease-pradiction"
+    "contract validation"
   ],
-  "author": "Navneetkumar & rohanshu",
+  "author": "Navneetkumar & Rohanshu & Ronak",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.8",
