@@ -1,7 +1,5 @@
 // to connect with collections
 const UserHistory = require("../../Model/UserHistory");
-const Disease = require("../../Model/Disease");
-const Medicine = require("../../Model/Medicine");
 
 const getDiseaseByHistoryId = async (req, res) => {
     try {

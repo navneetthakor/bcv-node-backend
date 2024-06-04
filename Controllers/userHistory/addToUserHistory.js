@@ -1,6 +1,5 @@
 // to connect with collections
 const UserHistory = require("../../Model/UserHistory");
-const Disease = require("../../Model/Disease");
 
 // to validate body parameters
 const { validationResult, check } = require("express-validator");
