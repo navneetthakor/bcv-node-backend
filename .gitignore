@@ -1,2 +1,2 @@
-/bcv-node-backend/node_modules
-/bcv-node-backend/.env
+node_modules
+.env
