@@ -32,7 +32,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 // importing routes files
 const userRoutes = require('./Routes/user.js');
 const userHistoryRoutes = require('./Routes/userHistory.js');
-const flaskRoutes = require('./Routes/flaskfetch.js');
+const flaskRoutes = require('./Routes/djangofetch.js');
 
 // placing middlewares
 app.use('/user',userRoutes);
