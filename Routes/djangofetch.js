@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // to upload images 
-const upload = require('../Middelwares/fetchPDFs.js');
+const upload = require('../Middelwares/fetchImages.js');
 
 // to communicate with ML model
 const axios = require('axios');

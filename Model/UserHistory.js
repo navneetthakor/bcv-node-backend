@@ -16,6 +16,10 @@ const UserHistorySchema = new Schema({
             type: String,
         },
 
+        summary: {
+            type: String,
+        },
+
         search_date: {
             type: Date,
             default: Date.now
