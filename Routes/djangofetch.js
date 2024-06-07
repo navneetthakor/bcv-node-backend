@@ -18,14 +18,14 @@ const path = require('path');
 router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
     try {
         // Ensure req.file contains the uploaded file details
-        console.log("hlo: ", req.file)
+        // console.log("hlo: ", req.file)
         if (!req.file) {
             return res.status(400).json({ error: "No file uploaded" });
         }
 
         // Get the uploaded pdf's url
         let filePath = req.file.path;
-
+        console.log("file is at : ", filePath);
         // Send the cloudinary pdf url to Django server
         const url = `${process.env.MODEL_URL}/pdfdetails`;
         const response = await axios.post(url, filePath, {
@@ -36,12 +36,12 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
 
         // Handle the response from Django (object containing another url and summary)
         const output = response.data.response_object
-        console.log(output) // output.url, output.summary
+        // console.log(output) // output.url, output.summary
 
-        res.status(200).json({ "url":output.url, "summary":output.summary  });
+        res.status(200).json({ "userUrl":filePath, "url":output.url, "summary":output.summary, "success" : true  });
     } catch (error) {
         console.error('Error :', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', "success": false});
     }
 })
 
