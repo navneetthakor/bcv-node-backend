@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 
+// to connect with mongoDB collection "Template"
+const Template = require('../Model/Template.js');
+
 // to upload images 
 const upload = require('../Middelwares/fetchPDFs.js');
 
@@ -24,11 +27,26 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
         }
 
         // Get the uploaded pdf's url
-        let filePath = req.file.path;
-        console.log("file is at : ", filePath);
+        // let filePath = req.file.path;
+
+        // collect template-url 
+        const template = await Template.findOne({agreeType : req.agreeType});
+
+        if(!template){
+            return res.status(404).json({error : "corresponding template not found"});
+        }
+
+        // body of request to be sent to django 
+        const body = {
+            inputUrl : req.file.path,
+            templateUrl : template.url,
+            agreeType : template.agreeType,
+            clauses: template.clauses
+        }
+        console.log("1st request body : ", body);
         // Send the cloudinary pdf url to Django server
         const url = `${process.env.MODEL_URL}/pdfdetails`;
-        const response = await axios.post(url, filePath, {
+        const response = await axios.post(url, body, {
             headers: {
                 'Content-Type': 'text/plain'
             }
