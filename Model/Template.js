@@ -17,6 +17,6 @@ const TemplateSchema = new Schema ({
     timestamps: true
 });
 
-const Template = mongoose.model('Template', TemplateSchema);
+const Template = mongoose.model('template', TemplateSchema);
 
 module.exports = Template;

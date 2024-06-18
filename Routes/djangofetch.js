@@ -30,7 +30,7 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
         // let filePath = req.file.path;
 
         // collect template-url 
-        const template = await Template.findOne({agreeType : req.agreeType});
+        const template = await Template.findOne({agreeType : req.body.agreeType});
 
         if(!template){
             return res.status(404).json({error : "corresponding template not found"});
@@ -45,7 +45,7 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
         }
         console.log("1st request body : ", body);
         // Send the cloudinary pdf url to Django server
-        const url = `${process.env.MODEL_URL}/pdfdetails`;
+        const url = `${process.env.MODEL_URL}/contractify/`;
         const response = await axios.post(url, body, {
             headers: {
                 'Content-Type': 'text/plain'
@@ -54,9 +54,9 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
 
         // Handle the response from Django (object containing another url and summary)
         const output = response.data.response_object
-        // console.log(output) // output.url, output.summary
+        console.log("Output from django side is :\n\n", output) // output.url, output.summary
 
-        res.status(200).json({ "userUrl":filePath, "url":output.url, "summary":output.summary, "success" : true  });
+        res.status(200).json({ "userUrl":filePath, "url":output.highlitedPdf, "summary":output.summary, "comaparsion": output.compare_dic , "success" : true  });
     } catch (error) {
         console.error('Error :', error);
         res.status(500).json({ error: 'Internal server error', "success": false});
