@@ -53,10 +53,15 @@ router.post('/fetchdetails', upload.single('file'),  async (req, res) => {
         });
 
         // Handle the response from Django (object containing another url and summary)
-        const output = response.data.response_object
-        console.log("Output from django side is :\n\n", output) // output.url, output.summary
+        const output = response.data
+        // console.log("Output from django side is :\n\n", output) // output.url, output.summary
 
-        res.status(200).json({ "userUrl":filePath, "url":output.highlitedPdf, "summary":output.summary, "comaparsion": output.compare_dic , "success" : true  });
+        const transformedNer = Object.keys(output.ner_dict).map(key => {
+            return { key: key, value: output.ner_dict[key] };
+        });
+
+        console.log(output.compare_dic)
+        res.status(200).json({ "userUrl":req.file.path, "url":output.highlitedPdf, "ner":transformedNer, "summary":output.summary, "comaparsion": output.compare_dic , "success" : true  });
     } catch (error) {
         console.error('Error :', error);
         res.status(500).json({ error: 'Internal server error', "success": false});
