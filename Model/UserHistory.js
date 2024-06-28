@@ -8,23 +8,36 @@ const UserHistorySchema = new Schema({
     },
 
     search_history: [{
-        uploaded_pdf: {
+        comapany:{
             type: String,
-        },
+            required: true,
+            index: 'hashed',
+            data: [{
+                uploaded_pdf: {
+                    type: String,
+                },
+                
+                highlighted_pdf: {
+                    type: String,
+                },
         
-        highlighted_pdf: {
-            type: String,
-        },
+                summary: {
+                    type: String,
+                },
 
-        summary: {
-            type: String,
-        },
-
-        search_date: {
-            type: Date,
-            default: Date.now
+                ner_dic:{
+                    type: String,
+                },
+                compare_dic:{
+                    type: Object
+                },
+                search_date: {
+                    type: Date,
+                    default: Date.now
+                }
+            }],
         }
-    }],
+    }]
 })
 
 const UserHistory = mongoose.model('userhistory', UserHistorySchema)

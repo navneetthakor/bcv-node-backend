@@ -5,7 +5,8 @@ const TemplateSchema = new Schema ({
     agreeType: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: 'hashed'
     },
 
     clauses: [String],
