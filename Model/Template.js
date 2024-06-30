@@ -12,7 +12,7 @@ const TemplateSchema = new Schema(
     templates: [
       {
         version: {
-          type: Number,
+          type: String,
           required: true,
           unique: true,
           index: "hashed",
