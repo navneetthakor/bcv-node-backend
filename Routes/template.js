@@ -18,9 +18,9 @@ const removeTemplate = require("../Controllers/template/removeTemplate.js");
 const updateTemplate = require("../Controllers/template/updateTemplate.js");
 
 // add Template
-router.post("/add",fetchUser,
+router.post('/add',fetchUser,
   [
-    body("version", "Provide version  to remove template").not().isEmpty(),
+    body("version", "Provide version  to add template").not().isEmpty(),
   ],
   upload.single("url"),
   addTemplate
@@ -42,3 +42,6 @@ router.post("/update",fetchUser,
   upload.single("url"),
   updateTemplate
 );
+
+
+module.exports = router;

@@ -6,6 +6,7 @@ const { validationResult } = require("express-validator");
 
 const addTemplate = async (req, res) => {
   try {
+    console.log(req.body);
     // checking the given parameters
     const err = validationResult(req);
     if (!err.isEmpty()) {
@@ -53,4 +54,4 @@ const addTemplate = async (req, res) => {
   }
 };
 
-return addTemplate;
+module.exports = addTemplate;

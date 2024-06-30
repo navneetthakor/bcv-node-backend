@@ -4,7 +4,7 @@ const Template = require("../../Model/Template");
 // to check wether requried details are provided in body or not
 const { validationResult } = require("express-validator");
 
-const updateTemplate = async (req, res) => {
+const removeTemplate = async (req, res) => {
   try {
     // checking the given parameters
     const err = validationResult(req);
@@ -42,4 +42,4 @@ const updateTemplate = async (req, res) => {
   }
 };
 
-return updateTemplate;
+module.exports = removeTemplate;

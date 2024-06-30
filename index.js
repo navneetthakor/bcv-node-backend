@@ -33,11 +33,12 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 const userRoutes = require('./Routes/user.js');
 const userHistoryRoutes = require('./Routes/userHistory.js');
 const djangoRoutes = require('./Routes/djangofetch.js');
-
+const templateRoutes = require('./Routes/template.js');
 // placing middlewares
 app.use('/user',userRoutes);
 app.use('/userHistory', userHistoryRoutes);
 app.use('/django',djangoRoutes);
+app.use('/template',templateRoutes);
 
 // default routes
 app.get("/", (req, res) => res.json({ signal: "green" }));
