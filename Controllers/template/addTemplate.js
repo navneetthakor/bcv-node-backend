@@ -46,7 +46,7 @@ const addTemplate = async (req, res) => {
     templates.push({ version: req.body.version, url: req.file.path });
     templateRec.save();
 
-    return res.status(200).json({ message: "template added", success: true });
+    return res.status(200).json({ newRecord: templates, success: true });
   } catch (error) {
     console.log(e);
     res.status(500).json({ error: "Internal server error", success: false});
