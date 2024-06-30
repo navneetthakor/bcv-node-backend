@@ -16,6 +16,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const UserHistory = require("../Model/UserHistory.js");
+const { version } = require("os");
 
 // -----------------------------ROUTE:1 Fetch highlighted pdf url annd summary from django server --------------------------
 
@@ -57,6 +58,13 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
     });
 
     // update user history-----------------------------------
+    const newDataEntry = {
+      uploaded_pdf: req.file.path,
+      highlighted_pdf: output.highlitedPdf,
+      summary: output.summary,
+      ner_dic: transformedNer,
+      compare_dic: output.compare_dic,
+    };
     // Find the user and company
     const userHistory = await UserHistory.findOne(req.user.id);
 
@@ -67,28 +75,12 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
 
     // if company not found then add new company
     if (!companyHistory) {
-      const newDataEntry = {
-        version: 0,
-        uploaded_pdf: req.file.path,
-        highlighted_pdf: output.highlitedPdf,
-        summary: output.summary,
-        ner_dic: transformedNer,
-        compare_dic: output.compare_dic,
-        clauses: body.clauses,
-      };
+      newDataEntry[version] = 0;
 
       companyHistory = { comapany: req.body.companyName, data: [newDataEntry] };
       userHistory.search_history.push(companyHistory);
     } else {
-      const newDataEntry = {
-        version: companyHistory.data.length,
-        uploaded_pdf: req.file.path,
-        highlighted_pdf: output.highlitedPdf,
-        summary: output.summary,
-        ner_dic: transformedNer,
-        compare_dic: output.compare_dic,
-        clauses: body.clauses,
-      };
+        newDataEntry[version] = companyHistory.data.length;
 
       companyHistory.data.push(newDataEntry);
     }
@@ -100,11 +92,7 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
 
     // return ans -----------
     return res.status(200).json({
-      userUrl: req.file.path,
-      url: output.highlitedPdf,
-      ner: transformedNer,
-      summary: output.summary,
-      comaparsion: output.compare_dic,
+      newDataEntry,
       success: true,
     });
   } catch (error) {
@@ -127,7 +115,6 @@ async function templateMode(req) {
   const body = {
     inputUrl: req.file.path,
     templateUrl: template.url,
-    clauses: template.clauses,
   };
   return body;
 }
@@ -182,7 +169,6 @@ async function comapanyMode(req) {
   const body = {
     inputUrl: req.file.path,
     templateUrl: versionRec.uploaded_pdf,
-    clauses: versionRec.clauses,
   };
 
   return body;

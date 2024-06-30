@@ -17,8 +17,6 @@ const TemplateSchema = new Schema(
           unique: true,
           index: "hashed",
         },
-
-        clauses: [String],
         url: {
           type: String,
           required: true,

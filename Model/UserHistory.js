@@ -40,7 +40,6 @@ const UserHistorySchema = new Schema({
           compare_dic: {
             type: Object,
           },
-          clauses: [String],
           search_date: {
             type: Date,
             default: Date.now,
