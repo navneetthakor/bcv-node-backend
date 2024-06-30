@@ -14,6 +14,7 @@ const bcrypt = require('bcryptjs');
 // to delete image 
 const fs = require('fs');
 const path = require('path');
+const Template = require('../../Model/Template');
 
 const createUser = async(req,res) => {
     try{
@@ -56,6 +57,13 @@ const createUser = async(req,res) => {
             search_history: [],
         })
         newUserHistory.save();
+
+        // creating template record for this user 
+        const templateRec = new Template({
+            user_id: newUser._id,
+            templates: []
+        })
+        templateRec.save();
     
         // jsonwebtoken related 
         // to provide authentication token back to user 
@@ -66,6 +74,8 @@ const createUser = async(req,res) => {
         }
         const jwt_secret = process.env.JWT_SECRET;
         const usertoken = jwt.sign(data,jwt_secret);
+
+
         return res.json({usertoken: usertoken, signal: "green"});
     
         }catch(e){
