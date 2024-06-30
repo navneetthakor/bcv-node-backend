@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const {Schema} = mongoose
 
 const TemplateSchema = new Schema ({
-    agreeType: {
-        type: String,
+    version: {
+        type: Number,
         required: true,
         unique: true,
         index: 'hashed'

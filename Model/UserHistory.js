@@ -1,45 +1,56 @@
-const mongoose = require('mongoose')
-const {Schema} = mongoose
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const UserHistorySchema = new Schema({
-    user_id:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    unique: true,
+    index: "hashed",
+  },
 
-    search_history: [{
-        comapany:{
-            type: String,
+  search_history: [
+    {
+      comapany: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      data: [
+        {
+          version: {
+            type: Number,
             required: true,
-            index: 'hashed',
-            data: [{
-                uploaded_pdf: {
-                    type: String,
-                },
-                
-                highlighted_pdf: {
-                    type: String,
-                },
-        
-                summary: {
-                    type: String,
-                },
+          },
+          uploaded_pdf: {
+            type: String,
+          },
 
-                ner_dic:{
-                    type: String,
-                },
-                compare_dic:{
-                    type: Object
-                },
-                search_date: {
-                    type: Date,
-                    default: Date.now
-                }
-            }],
-        }
-    }]
-})
+          highlighted_pdf: {
+            type: String,
+          },
 
-const UserHistory = mongoose.model('userhistory', UserHistorySchema)
+          summary: {
+            type: String,
+          },
+
+          ner_dic: {
+            type: String,
+          },
+          compare_dic: {
+            type: Object,
+          },
+          clauses: [String],
+          search_date: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+    },
+  ],
+});
+
+const UserHistory = mongoose.model("userhistory", UserHistorySchema);
 
 module.exports = UserHistory;
