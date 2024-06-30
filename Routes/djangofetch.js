@@ -5,8 +5,9 @@ const router = express.Router();
 // to connect with mongoDB collection "Template"
 const Template = require("../Model/Template.js");
 
-// to upload images
+// middlewares
 const upload = require("../Middelwares/fetchPDFs.js");
+const fetchUser = require("../Middelwares/fetchUser.js");
 
 // to communicate with ML model
 const axios = require("axios");
@@ -18,7 +19,7 @@ const UserHistory = require("../Model/UserHistory.js");
 
 // -----------------------------ROUTE:1 Fetch highlighted pdf url annd summary from django server --------------------------
 
-router.post("/fetchdetails", upload.single("file"), async (req, res) => {
+router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) => {
   try {
     // Ensure req.file contains the uploaded file details
     // console.log("hlo: ", req.file)
@@ -112,10 +113,11 @@ router.post("/fetchdetails", upload.single("file"), async (req, res) => {
   }
 });
 
-// function to create body if mode === ' comapany'
+// function to create body if mode === ' Template'
 async function templateMode(req) {
   // collect template-url
-  const template = await Template.findOne({ version: req.body.version });
+  const templateRecord = await Template.findOne(req.user.id);
+  const template = templateRecord.templates.find((t) => t.version === req.body.version);
 
   if (!template) {
     return { error: "corresponding template not found" };
