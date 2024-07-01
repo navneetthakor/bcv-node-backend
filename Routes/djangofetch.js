@@ -66,7 +66,7 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
       compare_dic: output.compare_dic,
     };
     // Find the user and company
-    const userHistory = await UserHistory.findOne(req.user.id);
+    const userHistory = await UserHistory.findOne({user_id :req.user.id});
 
     // Find the specific company entry in search_history
     let companyHistory = userHistory.search_history.find(
