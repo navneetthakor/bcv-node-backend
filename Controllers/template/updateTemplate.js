@@ -20,7 +20,7 @@ const updateTemplate = async (req, res) => {
       }
 
     // find template corresponding to user id
-    const templateRec = await Template.findById(req.user.id);
+    const templateRec = await Template.findOne({user_id: req.user.id});
 
     // if  tempate record not found for user (typically it will never happen)
     if (!templateRec) {
@@ -47,7 +47,7 @@ const updateTemplate = async (req, res) => {
     return res.status(200).json({newRecord: templates, success: true});
 
   } catch (error) {
-    console.log(e);
+    console.log(error);
     res.status(500).json({ error: "Internal server error", success: false });
   }
 };

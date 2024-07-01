@@ -1,19 +1,14 @@
 // to access Template collection
 const Template = require("../../Model/Template");
 
-// to check wether requried details are provided in body or not
-const { validationResult } = require("express-validator");
-
 const removeTemplate = async (req, res) => {
   try {
-    // checking the given parameters
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-      return res.status(400).json({ error: err.array(), success: false });
+    if (!req.body.version) {
+      return res.status(400).json({ error: "Please provide version to remove", success: false });
     }
 
     // find template corresponding to user id
-    const templateRec = await Template.findById(req.user.id);
+    const templateRec = await Template.findOne({user_id: req.user.id});
 
     // if  tempate record not found for user (typically it will never happen)
     if (!templateRec) {
@@ -29,15 +24,16 @@ const removeTemplate = async (req, res) => {
     // check that any template is there with same version  as current
     const newTemplates = templates.filter((t) => t.version !== req.body.version);
 
-    const updatedRec = await Template.updateOne(
-        templateRec._id,
+    await Template.updateOne(
+        {_id: templateRec._id},
         {$set : {templates: newTemplates}},
         {new: true}
     )
-    return res.status(200).json({newRecord: updatedRec, success: true});
+
+    return res.status(200).json({remaining: newTemplates , success: true});
     
   } catch (error) {
-    console.log(e);
+    console.log(error);
     res.status(500).json({ error: "Internal server error", success: false });
   }
 };

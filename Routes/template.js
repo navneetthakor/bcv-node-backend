@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // to validate the given parameter in request
-const { body } = require("express-validator");
+const { body, check } = require("express-validator");
 
 // template modal
 const Template = require("../Model/Template");
@@ -16,32 +16,32 @@ const upload = require("../Middelwares/fetchPDFs.js");
 const addTemplate = require("../Controllers/template/addTemplate.js");
 const removeTemplate = require("../Controllers/template/removeTemplate.js");
 const updateTemplate = require("../Controllers/template/updateTemplate.js");
+const getTemplate = require("../Controllers/template/getTemplate.js");
 
 // add Template
 router.post('/add',fetchUser,
+  upload.single("url"),
   [
     body("version", "Provide version  to add template").not().isEmpty(),
   ],
-  upload.single("url"),
   addTemplate
 );
 
 //remove template
-router.post("/remove",fetchUser,
-  [
-    body("version", "Provide version  to remove template").not().isEmpty()
-  ],
-  removeTemplate
-);
+router.delete("/remove",fetchUser,removeTemplate);
 
 //update template
-router.post("/update",fetchUser,
+router.put("/update",fetchUser,
+  upload.single("url"),
   [
     body("version", "Provide version  to update").not().isEmpty()
   ],
-  upload.single("url"),
   updateTemplate
 );
+
+
+// get all templates of perticular user 
+router.post('/get',fetchUser,getTemplate);
 
 
 module.exports = router;

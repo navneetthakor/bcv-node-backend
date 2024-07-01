@@ -1,4 +1,5 @@
 // to access Template collection
+const { Mongoose } = require("mongoose");
 const Template = require("../../Model/Template");
 
 // to check wether requried details are provided in body or not
@@ -6,7 +7,6 @@ const { validationResult } = require("express-validator");
 
 const addTemplate = async (req, res) => {
   try {
-    console.log(req.body);
     // checking the given parameters
     const err = validationResult(req);
     if (!err.isEmpty()) {
@@ -21,7 +21,7 @@ const addTemplate = async (req, res) => {
     }
 
     // find template corresponding to user id
-    const templateRec = await Template.findById(req.user.id);
+    const templateRec = await Template.findOne({user_id: req.user.id});
 
     // if  tempate record not found for user (typically it will never happen)
     if (!templateRec) {
@@ -49,7 +49,7 @@ const addTemplate = async (req, res) => {
 
     return res.status(200).json({ newRecord: templates, success: true });
   } catch (error) {
-    console.log(e);
+    console.log(error);
     res.status(500).json({ error: "Internal server error", success: false});
   }
 };
