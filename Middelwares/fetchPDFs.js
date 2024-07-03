@@ -17,9 +17,12 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
+        // to generate unique name, otherwise it will generate error
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9); 
         return {
             folder: 'pdfs',  // Folder name in your Cloudinary storage
-            public_id: file.originalname.replace(path.extname(file.originalname), ''),  // Remove file extension
+            public_id: `${file.fieldname}_${uniqueSuffix}.pdf`,  // Remove file extension
+            // public_id: file.originalname.replace(path.extname(file.originalname), ''),  // Remove file extension
             format: 'pdf'  // Force format to be PDF
         };
     },

@@ -11,7 +11,7 @@ const UserHistorySchema = new Schema({
 
   search_history: [
     {
-      comapany: {
+      company: {
         type: String,
         required: true,
         unique: true
@@ -34,9 +34,10 @@ const UserHistorySchema = new Schema({
             type: String,
           },
 
-          ner_dic: {
-            type: String,
-          },
+          ner_dic: [{
+            key: String,
+            value: []
+          }],
           compare_dic: {
             type: Object,
           },

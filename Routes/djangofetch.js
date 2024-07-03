@@ -17,29 +17,30 @@ const fs = require("fs");
 const path = require("path");
 const UserHistory = require("../Model/UserHistory.js");
 const { version } = require("os");
+const { body } = require("express-validator");
 
 // -----------------------------ROUTE:1 Fetch highlighted pdf url annd summary from django server --------------------------
 
-router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) => {
+router.post("/fetchdetails", fetchUser,upload.single("url"), 
+async (req, res) => {
   try {
     // Ensure req.file contains the uploaded file details
-    // console.log("hlo: ", req.file)
     if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      return res.status(400).json({ error: "No file uploaded", success: false });
+    }
+
+    // if corresponding company name is not provided 
+    if(!req.body.company){
+      return res.status(400).json({ error: "Provide company name", success: false });
     }
 
     // to hold body
-    const body = {};
-    // check whether user wants to compare against template or previous agreement
-    if (req.body.mode.toLocaleLowerCase() === "template") {
-      body = templateMode(req);
-    } else {
-      body = comapanyMode(req);
-    }
+    let body = {
+      inputUrl: req.file.path,
+      templateUrl: req.body.templateUrl
+    };
 
-    if (body.error) {
-      return res.status(400).json({ error, signal: "red" });
-    }
+    console.log("-----------------------body : ",body);
 
     // Send the cloudinary pdf url to Django server
     const url = `${process.env.MODEL_URL}/contractify/`;
@@ -70,17 +71,17 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
 
     // Find the specific company entry in search_history
     let companyHistory = userHistory.search_history.find(
-      (sh) => sh.comapany === req.body.companyName
+      (sh) => sh.company === req.body.company
     );
 
     // if company not found then add new company
     if (!companyHistory) {
-      newDataEntry[version] = 0;
+      newDataEntry.version = 0;
 
-      companyHistory = { comapany: req.body.companyName, data: [newDataEntry] };
+      companyHistory = { company: req.body.company, data: [newDataEntry] };
       userHistory.search_history.push(companyHistory);
     } else {
-        newDataEntry[version] = companyHistory.data.length;
+        newDataEntry["version"] = companyHistory.data.length;
 
       companyHistory.data.push(newDataEntry);
     }
@@ -104,7 +105,7 @@ router.post("/fetchdetails", fetchUser,upload.single("file"), async (req, res) =
 // function to create body if mode === ' Template'
 async function templateMode(req) {
   // collect template-url
-  const templateRecord = await Template.findOne(req.user.id);
+  const templateRecord = await Template.findOne({user_id: req.user.id});
   const template = templateRecord.templates.find((t) => t.version === req.body.version);
 
   if (!template) {
@@ -119,12 +120,13 @@ async function templateMode(req) {
   return body;
 }
 
-// function to create body if mode === ' comapany'
-async function comapanyMode(req) {
+// function to create body if mode === ' company'
+async function companyMode(req) {
   // find record of company for current user -- O ( 1 ) (due to hashing)
-  const hisRecord = await UserHistory(req.user.id);
+  const hisRecord = await UserHistory.findOne({user_id: req.user.id});
 
   if (!hisRecord) {
+    console.log(hisRecord);
     return { error: "corresponding userHistory record not found" };
   }
   const serchHis = hisRecord.search_history;
@@ -134,9 +136,10 @@ async function comapanyMode(req) {
   for (let i = 0; i < serchHis.length; i++) {
     if (
       serchHis[i].company.toLocaleLowerCase() ===
-      req.body.companyName.toLocaleLowerCase()
+      req.body.company.toLocaleLowerCase()
     ) {
       compRecord = serchHis[i].data;
+      break;
     }
   }
   if (!compRecord) {
